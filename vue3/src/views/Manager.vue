@@ -38,7 +38,7 @@
     <div style="display: flex">
 
       <div class="manager-main-left">
-        <el-menu router :default-openeds="['1','2']" :default-active="router.currentRoute.value.path">
+        <el-menu router :default-openeds="['1', '2', '3']" :default-active="router.currentRoute.value.path">
           <el-menu-item index="/manager/home">
             <el-icon><home-filled/></el-icon>
             <span>系统首页</span>
@@ -48,9 +48,16 @@
               <el-icon><Menu/></el-icon>
               <span>信息管理</span>
             </template>
-            <el-menu-item index="/manager/notice">系统公告</el-menu-item>
+            <el-menu-item index="/manager/examinationType">普通体检类型</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="2">
+            <template #title>
+              <el-icon><Menu/></el-icon>
+              <span>系统管理</span>
+            </template>
+            <el-menu-item index="/manager/notice">系统公告</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="3">
             <template #title>
               <el-icon><Menu/></el-icon>
               <span>用户管理</span>

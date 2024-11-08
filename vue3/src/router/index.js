@@ -12,6 +12,7 @@ const router = createRouter({
         {path: 'person', meta: {name: '个人信息'}, component: () => import('@/views/manager/Person.vue')},
         {path: 'password', meta: {name: '修改密码'}, component: () => import('@/views/manager/Password.vue')},
         {path: 'notice', meta: {name: '系统公告'}, component: () => import('@/views/manager/Notice.vue')},
+        { path: 'examinationType', meta: { name: '普通体检类型' }, component: () => import('@/views/manager/ExaminationType.vue')},
       ]
     },
     {

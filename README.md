@@ -276,7 +276,15 @@ public interface ExaminationTypeMapper {
 
 
 
-## 3.
+## 3.医生管理功能
+
+### 后端
+
+没什么好说的还是复制粘贴，不过要注意mybatis和sql语句的命名规范
+
+![003](images/003.png)
+
+![004](images/004.png)
 
 
 

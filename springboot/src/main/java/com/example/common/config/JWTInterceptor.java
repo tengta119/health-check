@@ -11,6 +11,8 @@ import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.exception.CustomException;
 import com.example.service.AdminService;
+import com.example.service.DoctorService;
+import com.example.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,10 @@ public class JWTInterceptor implements HandlerInterceptor {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private DoctorService doctorService;
 
     //在请求处理之前调用
     @Override
@@ -47,6 +53,12 @@ public class JWTInterceptor implements HandlerInterceptor {
             //根据角色判断属于那个数据库
             if (RoleEnum.ADMIN.name().equals(role)) {
                 account = adminService.selectById(Integer.valueOf(userId));
+            } else if (RoleEnum.USER.name().equals(role)) {
+                account = userService.selectById(Integer.valueOf(userId));
+            } else if (RoleEnum.DOCTOR.name().equals(role)) {
+                account = doctorService.selectById(Integer.valueOf(userId));
+            } else {
+                throw new CustomException("500","非法请求");
             }
 
         } catch (Exception e) {

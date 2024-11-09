@@ -34,7 +34,7 @@ public class DoctorService {
         if (ObjectUtil.isEmpty(doctor.getName())) {
             doctor.setName(doctor.getUsername());
         }
-        doctor.setRole(RoleEnum.Doctor.name());
+        doctor.setRole(RoleEnum.DOCTOR.name());
         doctorMapper.insert(doctor);
     }
 

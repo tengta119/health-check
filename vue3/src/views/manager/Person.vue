@@ -24,6 +24,12 @@
       <el-form-item prop="email" label="邮箱">
         <el-input v-model="data.user.email" placeholder="请输入邮箱"></el-input>
       </el-form-item>
+      <el-form-item prop="workTime" label="从业时间" v-if="data.user.role === 'DOCTOR'">
+        <el-input v-model="data.user.workTime" placeholder="请输入从业时间"></el-input>
+      </el-form-item>
+      <el-form-item prop="descr" label="个人简介" v-if="data.user.role === 'DOCTOR'">
+        <el-input type="textarea" :rows="3" v-model="data.user.descr" placeholder="请输入个人简介"></el-input>
+      </el-form-item>
       <div style="text-align: center">
         <el-button type="primary" @click="update">保 存</el-button>
       </div>
@@ -36,7 +42,7 @@ import { reactive } from "vue";
 import request from "@/utils/request.js";
 import {ElMessage} from "element-plus";
 
-const baseUrl = import.meta.env.VITE_BASE_URL
+const baseUrl = 'http://localhost:9090'
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}')
@@ -55,7 +61,27 @@ const update = () => {
         localStorage.setItem('xm-user', JSON.stringify(data.user))
         emit('updateUser')
       } else {
-        ElMessage.error(res.msg)
+        ElMessage.error(res.message)
+      }
+    })
+  } else if (data.user.role === 'DOCTOR') {
+    request.put('/doctor/update', data.user).then(res => {
+      if (res.code === '200') {
+        ElMessage.success('保存成功')
+        localStorage.setItem('xm-user', JSON.stringify(data.user))
+        emit('updateUser')
+      } else {
+        ElMessage.error(res.message)
+      }
+    })
+  } else if (data.user.role === 'USER') {
+    request.put('/user/update', data.user).then(res => {
+      if (res.code === '200') {
+        ElMessage.success('保存成功')
+        localStorage.setItem('xm-user', JSON.stringify(data.user))
+        emit('updateUser')
+      } else {
+        ElMessage.error(res.message)
       }
     })
   }

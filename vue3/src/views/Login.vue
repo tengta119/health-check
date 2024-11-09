@@ -15,6 +15,8 @@
         <el-form-item prop="role">
           <el-select size="large" v-model="data.form.role">
             <el-option label="管理员" value="ADMIN"></el-option>
+            <el-option label="普通用户" value="USER"></el-option>
+            <el-option label="医生" value="DOCTOR"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -43,7 +45,7 @@ const data = reactive({
   form: {
     username: '',
     password: '',
-    role: 'ADMIN'
+    role: 'USER'
   },
   rules: {
     username: [
@@ -84,7 +86,8 @@ const login = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to top, #7f7fd5, #86a8e7, #91eae4);
+  background-image: url("@/assets/imgs/bg.png");
+  background-size: cover;
 }
 
 .login-box {
@@ -92,7 +95,7 @@ const login = () => {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 </style>

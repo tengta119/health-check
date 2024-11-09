@@ -7,6 +7,8 @@ import com.example.common.Constants;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.service.AdminService;
+import com.example.service.DoctorService;
+import com.example.service.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -24,12 +26,20 @@ public class TokenUtils {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private DoctorService doctorService;
 
     private static AdminService staticadminService;
+    private static UserService staticuserService;
+    private static DoctorService staticdoctorService;
 
     @PostConstruct
     public void init() {
         staticadminService = adminService;
+        staticuserService = userService;
+        staticdoctorService = doctorService;
     }
 
     public static  String createToken(String data, String sign) {
@@ -49,8 +59,13 @@ public class TokenUtils {
             String audience = JWT.decode(token).getAudience().get(0);
             Integer userId = Integer.valueOf(audience.split("-")[0]);
             String role = audience.split("-")[1];
+
             if (RoleEnum.ADMIN.name().equals(role)) {
                 return staticadminService.selectById(userId);
+            } else if (RoleEnum.USER.name().equals(role)) {
+                return staticuserService.selectById(userId);
+            } else if (RoleEnum.DOCTOR.name().equals(role)) {
+                return staticdoctorService.selectById(userId);
             }
         } catch (Exception e) {
             log.error("获取当前登录用户失败：", e);

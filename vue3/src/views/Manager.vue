@@ -43,14 +43,14 @@
             <el-icon><home-filled/></el-icon>
             <span>系统首页</span>
           </el-menu-item>
-          <el-sub-menu index="1">
+          <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu/></el-icon>
               <span>信息管理</span>
             </template>
             <el-menu-item index="/manager/examinationType">普通体检类型</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu index="2">
+          <el-sub-menu index="2" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu/></el-icon>
               <span>系统管理</span>
@@ -59,7 +59,7 @@
             <el-menu-item index="/manager/office">科室信息</el-menu-item>
             <el-menu-item index="/manager/title">职称信息</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu index="3">
+          <el-sub-menu index="3" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu/></el-icon>
               <span>用户管理</span>

@@ -58,7 +58,7 @@ const updatePassword = () => {
           ElMessage.success('保存成功')
           logout()
         } else {
-          ElMessage.error(res.msg)
+          ElMessage.error(res.message)
         }
       })
     }

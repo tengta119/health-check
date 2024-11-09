@@ -55,6 +55,7 @@ const validatePass = (rule, value, callback) => {
 
 const data = reactive({
   form: {
+    role: 'USER',
     username: '',
     password: '',
     confirmPassword: '',

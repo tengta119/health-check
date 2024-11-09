@@ -300,3 +300,76 @@ public interface ExaminationTypeMapper {
 
 cv
 
+6.开发登录、注册、个人信息、修改密码功能
+
+### 后端
+
+#### JWT
+
+由于除了`登录`,`注册`，`退出`不需要JWT验证，其余访问都需要验证，又因在此模块中添加了普通**用户**和**医生**的角色，所以需要对拦截器进行更改
+
+**JWTInterceptor**
+
+```java
+//JWt拦截器
+@Component
+public class JWTInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private AdminService adminService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private DoctorService doctorService;
+
+    //在请求处理之前调用
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //从请求中拿到token
+        String token = request.getHeader(Constants.TOKEN);
+        if (ObjectUtil.isNull(token)) {
+            //从请求参数中拿一次
+            token =  request.getParameter(Constants.TOKEN);
+        }
+        //开始认证
+        if (ObjectUtil.isNull(token)) {
+            throw new CustomException(ResultCodeEnum.TOKEN_INVALID_ERROR);
+        }
+        Account account = null;
+
+        try {
+            System.out.println(token);
+            String audience = JWT.decode(token).getAudience().get(0);
+            String userId = audience.split("-")[0];
+            String role = audience.split("-")[1];
+            //根据角色判断属于那个数据库
+            if (RoleEnum.ADMIN.name().equals(role)) {
+                account = adminService.selectById(Integer.valueOf(userId));
+            } else if (RoleEnum.USER.name().equals(role)) {
+                account = userService.selectById(Integer.valueOf(userId));
+            } else if (RoleEnum.DOCTOR.name().equals(role)) {
+                account = doctorService.selectById(Integer.valueOf(userId));
+            } else {
+                throw new CustomException("500","非法请求");
+            }
+
+        } catch (Exception e) {
+            throw new CustomException(ResultCodeEnum.TOKEN_CHECK_ERROR);
+        }
+        if (account == null) {
+            //用户不存在
+            throw new CustomException(ResultCodeEnum.TOKEN_CHECK_ERROR);
+        }
+        try {
+            //通过用户密码作为密钥验证密钥的合法行
+            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(account.getPassword())).build();
+            jwtVerifier.verify(token); //验证token
+        } catch (JWTVerificationException e) {
+            throw new CustomException(ResultCodeEnum.TOKEN_CHECK_ERROR);
+        }
+
+        return true;
+    }
+}
+```
+

@@ -49,6 +49,7 @@
               <span>信息管理</span>
             </template>
             <el-menu-item index="/manager/examinationType">普通体检类型</el-menu-item>
+            <el-menu-item index="/manager/information">健康科普信息</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="2" v-if="data.user.role === 'ADMIN'">
             <template #title>

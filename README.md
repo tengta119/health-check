@@ -294,3 +294,9 @@ public interface ExaminationTypeMapper {
 
 <font color="red">注意</font>不能单独写一个mapper.xml文件，否则会报错
 
+
+
+## 5.开发普通用户管理功能
+
+cv
+

@@ -66,6 +66,7 @@
             </template>
             <el-menu-item index="/manager/doctor">医生信息</el-menu-item>
             <el-menu-item index="/manager/admin">管理员信息</el-menu-item>
+            <el-menu-item index="/manager/user">普通用户信息</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </div>

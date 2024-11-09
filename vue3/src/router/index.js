@@ -16,6 +16,7 @@ const router = createRouter({
         { path: 'doctor', meta: { name: '普通体检类型' }, component: () => import('@/views/manager/Doctor.vue')},
         { path: 'office', meta: { name: '科室信息' }, component: () => import('@/views/manager/Office.vue')},
         { path: 'title', meta: { name: '科室信息' }, component: () => import('@/views/manager/Title.vue')},
+        { path: 'user', meta: { name: '普通用户信息' }, component: () => import('@/views/manager/User.vue')},
       ]
     },
     {

@@ -56,6 +56,8 @@
               <span>系统管理</span>
             </template>
             <el-menu-item index="/manager/notice">系统公告</el-menu-item>
+            <el-menu-item index="/manager/office">科室信息</el-menu-item>
+            <el-menu-item index="/manager/title">职称信息</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="3">
             <template #title>

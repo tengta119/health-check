@@ -288,5 +288,9 @@ public interface ExaminationTypeMapper {
 
 
 
+## 4.开发科室和职位信息管理
 
+没什么好说，还是复制粘贴
+
+<font color="red">注意</font>不能单独写一个mapper.xml文件，否则会报错
 

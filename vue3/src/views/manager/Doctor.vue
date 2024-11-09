@@ -2,6 +2,12 @@
   <div>
     <div class="card" style="margin-bottom: 5px">
       <el-input v-model="data.name" prefix-icon="Search" style="width: 240px; margin-right: 10px" placeholder="请输入名称查询"></el-input>
+      <el-select style="width: 240px; margin-right: 10px" v-model="data.officeId" placeholder="请选择科室">
+        <el-option v-for="item in data.officeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>
+      <el-select style="width: 240px; margin-right: 10px" v-model="data.titleId" placeholder="请选择职称">
+        <el-option v-for="item in data.titleList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>
       <el-button type="info" plain @click="load">查询</el-button>
       <el-button type="warning" plain style="margin: 0 10px" @click="reset">重置</el-button>
     </div>
@@ -11,7 +17,7 @@
     </div>
 
     <div class="card" style="margin-bottom: 5px">
-      <el-table tooltip-effect="dark myTooltip" stripe :data="data.tableData" @selection-change="handleSelectionChange" >
+      <el-table tooltip-effect="dark myTooltip" stripe :data="data.tableData" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="username" label="账号" />
         <el-table-column prop="avatar" label="头像">
@@ -24,6 +30,8 @@
         <el-table-column prop="role" label="角色" />
         <el-table-column prop="phone" label="电话" />
         <el-table-column prop="email" label="邮箱" />
+        <el-table-column prop="officeName" label="科室" />
+        <el-table-column prop="titleName" label="职称" />
         <el-table-column prop="workTime" label="从业时长" />
         <el-table-column prop="descr" label="简介" show-overflow-tooltip />
         <el-table-column label="操作" width="100" fixed="right">
@@ -41,7 +49,7 @@
     <el-dialog title="医生信息" v-model="data.formVisible" width="40%" destroy-on-close>
       <el-form ref="form" :model="data.form" label-width="70px" style="padding: 20px">
         <el-form-item prop="username" label="用户名">
-          <el-input  v-model="data.form.username" placeholder="请输入用户名"></el-input>
+          <el-input :disabled="data.form.id" v-model="data.form.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item prop="avatar" label="头像">
           <el-upload
@@ -53,13 +61,23 @@
           </el-upload>
         </el-form-item>
         <el-form-item prop="name" label="姓名">
-          <el-input  v-model="data.form.name" placeholder="请输入姓名"></el-input>
+          <el-input v-model="data.form.name" placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item prop="phone" label="电话">
           <el-input v-model="data.form.phone" placeholder="请输入电话"></el-input>
         </el-form-item>
         <el-form-item prop="email" label="邮箱">
           <el-input v-model="data.form.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="科室">
+          <el-select style="width: 100%" v-model="data.form.officeId">
+            <el-option v-for="item in data.officeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="职称">
+          <el-select style="width: 100%" v-model="data.form.titleId">
+            <el-option v-for="item in data.titleList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item prop="workTime" label="从业时长">
           <el-input v-model="data.form.workTime" placeholder="请输入从业时长"></el-input>
@@ -92,10 +110,22 @@ const data = reactive({
   form: {},
   tableData: [],
   pageNum: 1,
-  pageSize: 1,
+  pageSize: 10,
   total: 0,
   name: null,
-  ids: []
+  ids: [],
+  officeList: [],
+  titleList: [],
+  officeId: null,
+  titleId: null
+})
+
+request.get('/office/selectAll').then(res => {
+  data.officeList = res.data
+})
+
+request.get('/title/selectAll').then(res => {
+  data.titleList = res.data
 })
 
 const load = () => {
@@ -103,7 +133,9 @@ const load = () => {
     params: {
       pageNum: data.pageNum,
       pageSize: data.pageSize,
-      name: data.name
+      name: data.name,
+      officeId: data.officeId,
+      titleId: data.titleId,
     }
   }).then(res => {
     if (res.code === '200') {
@@ -188,16 +220,16 @@ const handleFileUpload = (res) => {
 
 const reset = () => {
   data.name = null
+  data.officeId = null
+  data.titleId = null
   load()
 }
 
 load()
-
-
 </script>
 
 <style>
 .myTooltip {
-  width: 500px !important;
+  width: 500px;
 }
 </style>

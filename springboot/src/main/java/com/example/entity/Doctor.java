@@ -15,6 +15,42 @@ public class Doctor extends Account {
     private String email;
     private String workTime;
     private String descr;
+    private Integer officeId;
+    private Integer titleId;
+    private String officeName;
+    private String titleName;
+
+    public String getOfficeName() {
+        return officeName;
+    }
+
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
+    }
+
+    public String getTitleName() {
+        return titleName;
+    }
+
+    public void setTitleName(String titleName) {
+        this.titleName = titleName;
+    }
+
+    public Integer getTitleId() {
+        return titleId;
+    }
+
+    public void setTitleId(Integer titleId) {
+        this.titleId = titleId;
+    }
+
+    public Integer getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(Integer officeId) {
+        this.officeId = officeId;
+    }
 
     public String getDescr() {
         return descr;

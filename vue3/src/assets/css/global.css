@@ -20,3 +20,18 @@ a {
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     padding: 10px;
 }
+
+.line1 {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.line2 {
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 超出几行省略 */
+    overflow: hidden;
+}

@@ -43,6 +43,10 @@
             <el-icon><home-filled/></el-icon>
             <span>系统首页</span>
           </el-menu-item>
+          <el-menu-item index="/manager/userInformation">
+            <el-icon><Document/></el-icon>
+            <span>健康科普</span>
+          </el-menu-item>
           <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu/></el-icon>
@@ -87,7 +91,7 @@ const updateUser = () => {
   data.user = JSON.parse(localStorage.getItem('xm-user') || '{}')
 }
 
-import {HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
+import {Document, HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
 import { reactive } from "vue";
 import {ElMessage} from "element-plus";

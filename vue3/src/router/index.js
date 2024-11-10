@@ -18,6 +18,8 @@ const router = createRouter({
         { path: 'title', meta: { name: '科室信息' }, component: () => import('@/views/manager/Title.vue')},
         { path: 'user', meta: { name: '普通用户信息' }, component: () => import('@/views/manager/User.vue')},
         { path: 'information', meta: { name: '健康科普信息' }, component: () => import('@/views/manager/Information.vue')},
+        { path: 'userInformation', meta: { name: '健康科普信息' }, component: () => import('@/views/manager/UserInformation.vue')},
+        { path: 'informationDetail', meta: { name: '健康科普信息详情' }, component: () => import('@/views/manager/InformationDetail.vue')},
       ]
     },
     {

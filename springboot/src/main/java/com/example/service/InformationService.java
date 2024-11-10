@@ -56,4 +56,7 @@ public class InformationService {
         return PageInfo.of(list);
     }
 
+    public void updateViewCount(Integer id) {
+        informationMapper.updateViewCount(id);
+    }
 }

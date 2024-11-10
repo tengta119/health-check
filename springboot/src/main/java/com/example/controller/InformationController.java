@@ -81,4 +81,9 @@ public class InformationController {
         return Result.success(pageInfo);
     }
 
+    @PutMapping("/updateViewCount/{id}")
+    public Result updateViewCount(@PathVariable Integer id) {
+        informationService.updateViewCount(id);
+        return Result.success();
+    }
 }

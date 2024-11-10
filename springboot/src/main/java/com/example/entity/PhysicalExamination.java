@@ -30,6 +30,33 @@ public class PhysicalExamination {
     private String attention;
     /** 地址 */
     private String address;
+    private String examinationTypeName;
+    private String officeName;
+    private String doctorName;
+
+    public String getExaminationTypeName() {
+        return examinationTypeName;
+    }
+
+    public void setExaminationTypeName(String examinationTypeName) {
+        this.examinationTypeName = examinationTypeName;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+    public String getOfficeName() {
+        return officeName;
+    }
+
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
+    }
 
     public Integer getId() {
         return id;

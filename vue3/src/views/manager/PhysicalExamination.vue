@@ -41,6 +41,7 @@
       <el-pagination @current-change="load" background layout="prev, pager, next" :page-size="data.pageSize" v-model:current-page="data.pageNum" :total="data.total" />
     </div>
 
+<!--    上传-->
     <el-dialog title="普通体检项目信息" v-model="data.formVisible" width="40%" destroy-on-close>
       <el-form ref="form" :model="data.form" label-width="70px" style="padding: 20px">
         <el-form-item label="项目名称" prop="name">
@@ -138,7 +139,7 @@ request.get('/office/selectAll').then(res => {
   data.officeList = res.data
 })
 
-const baseUrl = 'http://localhost:9090'
+const baseUrl = import.meta.env.VITE_BASE_URL
 const handleFileUpload = (res) => {
   data.form.cover = res.data
 }
@@ -192,7 +193,7 @@ const save = () => {
 }
 
 const del = (id) => {
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', {type: 'warning'}).then(res => {
     request.delete('/physicalExamination/delete/' + id).then(res => {
       if (res.code === '200') {
         ElMessage.success("删除成功")
@@ -210,7 +211,7 @@ const delBatch = () => {
     ElMessage.warning("请选择数据")
     return
   }
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', {type: 'warning'}).then(res => {
     request.delete("/physicalExamination/delete/batch", {data: data.ids}).then(res => {
       if (res.code === '200') {
         ElMessage.success('操作成功')

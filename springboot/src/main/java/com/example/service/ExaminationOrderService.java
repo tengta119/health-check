@@ -1,9 +1,12 @@
 package com.example.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.ExaminationOrder;
+import com.example.entity.ExaminationPackage;
 import com.example.entity.PhysicalExamination;
 import com.example.exception.CustomException;
 import com.example.mapper.ExaminationOrderMapper;
@@ -13,6 +16,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +27,8 @@ public class ExaminationOrderService {
     private ExaminationOrderMapper examinationOrderMapper;
     @Autowired
     private PhysicalExaminationService physicalExaminationService;
+    @Autowired
+    private ExaminationPackageService examinationPackageService;
 
 
     public void add(ExaminationOrder examinationOrder) {
@@ -43,6 +49,15 @@ public class ExaminationOrderService {
             PhysicalExamination physicalExamination = physicalExaminationService.selectById(examinationId);
             examinationOrder.setMoney(physicalExamination.getMoney());
             examinationOrder.setDoctorId(physicalExamination.getDoctorId());
+        } else {
+            //套餐体检
+            ExaminationOrder order = examinationOrderMapper.selectByExaminationIdAndOrderType(examinationOrder.getReserveDate(), examinationId, "套餐体检", currentUser.getId());
+            if (order != null) {
+                throw new CustomException("500", "您已经预约过该项目" + order.getReserveDate() + "的检查，请不要重复预约");
+            }
+            ExaminationPackage examinationPackage = examinationPackageService.selectById(examinationId);
+            examinationOrder.setMoney(examinationPackage.getMoney());
+            examinationOrder.setDoctorId(examinationPackage.getDoctorId());
         }
         Date date = new Date();
         String orderNo = DateUtil.format(date, "yyyyMMdd") + date.getTime();
@@ -86,6 +101,35 @@ public class ExaminationOrderService {
         }
         PageHelper.startPage(pageNum, pageSize);
         List<ExaminationOrder> list = examinationOrderMapper.selectAll(examinationOrder);
+
+
+        for (ExaminationOrder order : list) {
+            // 初始化一个列表来存储每个订单的体检项目
+            List<PhysicalExamination> examinationList = new ArrayList<>();
+
+            // 检查订单类型是否为“套餐体检”
+            if (order.getOrderType().equals("套餐体检")) {
+                // 从订单中获取体检ID
+                Integer examinationId = order.getExaminationId();
+
+                // 使用体检ID检索体检套餐
+                ExaminationPackage examinationPackage = examinationPackageService.selectById(examinationId);
+
+                // 将套餐中的体检项目解析为JSON数组
+                JSONArray examinationIds = JSONUtil.parseArray(examinationPackage.getExaminations());
+
+                // 遍历JSON数组中的每个体检ID
+                for (Object physicalExaminationId : examinationIds) {
+                    // 使用ID检索体检项目并将其添加到列表中
+                    PhysicalExamination physicalExamination = physicalExaminationService.selectById((Integer) physicalExaminationId);
+                    examinationList.add(physicalExamination);
+                }
+            }
+
+            // 将体检项目列表设置到订单中
+            order.setExaminationList(examinationList);
+        }
+
         return PageInfo.of(list);
     }
 

@@ -49,7 +49,11 @@
           </el-menu-item>
           <el-menu-item index="/manager/userPhysicalExamination">
             <el-icon><Check /></el-icon>
-            <span>预约普通体检预约</span>
+            <span>预约普通体检</span>
+          </el-menu-item>
+          <el-menu-item index="/manager/UserExaminationPackage">
+            <el-icon><CoffeeCup /></el-icon>
+            <span>预约套餐体检</span>
           </el-menu-item>
           <el-menu-item index="/manager/examinationOrder">
             <el-icon><Document /></el-icon>
@@ -101,7 +105,7 @@ const updateUser = () => {
   data.user = JSON.parse(localStorage.getItem('xm-user') || '{}')
 }
 
-import {Check, Document, HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
+import {Check, CoffeeCup, Document, HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
 import { reactive } from "vue";
 import {ElMessage} from "element-plus";

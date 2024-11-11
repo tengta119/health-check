@@ -1101,3 +1101,73 @@ CREATE TABLE `examination_package` (
     }
 ```
 
+
+
+
+
+## 12.普通用户预约套餐体检功能
+
+**套餐体检**与普通体检类似，但是**套餐体检**中包含多个体检项目，所以需要在**ExaminationOrder**中加入
+
+```java
+private List<PhysicalExamination> examinationList;
+```
+
+
+
+在**ExaminationOrderService**需要判断是**普通体检**还是**套餐体检**
+
+```java
+        if ("普通体检".equals(examinationOrder.getOrderType())) {
+
+            // 判断当前是否存在相同项目待审批的订单
+            ExaminationOrder order = examinationOrderMapper.selectByExaminationIdAndOrderType(examinationOrder.getReserveDate(), examinationId, "普通体检", currentUser.getId());
+            if (order != null) {
+                throw new CustomException("500", "您已经预约过该项目" + order.getReserveDate() + "的检查，请不要重复预约");
+            }
+            PhysicalExamination physicalExamination = physicalExaminationService.selectById(examinationId);
+            examinationOrder.setMoney(physicalExamination.getMoney());
+            examinationOrder.setDoctorId(physicalExamination.getDoctorId());
+        } else {
+            //套餐体检
+            ExaminationOrder order = examinationOrderMapper.selectByExaminationIdAndOrderType(examinationOrder.getReserveDate(), examinationId, "套餐体检", currentUser.getId());
+            if (order != null) {
+                throw new CustomException("500", "您已经预约过该项目" + order.getReserveDate() + "的检查，请不要重复预约");
+            }
+            ExaminationPackage examinationPackage = examinationPackageService.selectById(examinationId);
+            examinationOrder.setMoney(examinationPackage.getMoney());
+            examinationOrder.setDoctorId(examinationPackage.getDoctorId());
+        }
+```
+
+在查询订单时要查询订单中有几个项目
+
+```java
+        for (ExaminationOrder order : list) {
+            // 初始化一个列表来存储每个订单的体检项目
+            List<PhysicalExamination> examinationList = new ArrayList<>();
+
+            // 检查订单类型是否为“套餐体检”
+            if (order.getOrderType().equals("套餐体检")) {
+                // 从订单中获取体检ID
+                Integer examinationId = order.getExaminationId();
+
+                // 使用体检ID检索体检套餐
+                ExaminationPackage examinationPackage = examinationPackageService.selectById(examinationId);
+
+                // 将套餐中的体检项目解析为JSON数组
+                JSONArray examinationIds = JSONUtil.parseArray(examinationPackage.getExaminations());
+
+                // 遍历JSON数组中的每个体检ID
+                for (Object physicalExaminationId : examinationIds) {
+                    // 使用ID检索体检项目并将其添加到列表中
+                    PhysicalExamination physicalExamination = physicalExaminationService.selectById((Integer) physicalExaminationId);
+                    examinationList.add(physicalExamination);
+                }
+            }
+
+            // 将体检项目列表设置到订单中
+            order.setExaminationList(examinationList);
+        }
+```
+

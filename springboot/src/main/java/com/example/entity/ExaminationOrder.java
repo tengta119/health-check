@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import java.util.List;
+
 /**
  * 体检订单
  */
@@ -39,6 +41,15 @@ public class ExaminationOrder {
     private String doctorName;
     private String examinationName;
     private String feedback;
+    private List<PhysicalExamination> examinationList;
+
+    public List<PhysicalExamination> getExaminationList() {
+        return examinationList;
+    }
+
+    public void setExaminationList(List<PhysicalExamination> examinationList) {
+        this.examinationList = examinationList;
+    }
 
     public String getFeedback() {
         return feedback;

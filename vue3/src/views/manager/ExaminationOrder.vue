@@ -33,7 +33,10 @@
                 <el-descriptions-item label="预约日期">{{ scope.row.reserveDate }} </el-descriptions-item>
                 <el-descriptions-item label="预约开始时间">{{ scope.row.startTime }} </el-descriptions-item>
                 <el-descriptions-item label="预约结束时间">{{ scope.row.endTime }} </el-descriptions-item>
-                <el-descriptions-item label="体检项目">{{ scope.row.examinationName }} </el-descriptions-item>
+                <el-descriptions-item label="体检项目">
+                  <span v-if="scope.row.orderType === '普通体检'">{{ scope.row.examinationName }}</span>
+                  <span @click="viewExaminationList(scope.row.examinationList)" style="cursor: pointer; color: #2562ec" v-else>点击查看体检项目列表</span>
+                </el-descriptions-item>
                 <el-descriptions-item label="体检项目类型">{{ scope.row.orderType }} </el-descriptions-item>
                 <el-descriptions-item label="费用">{{ scope.row.money }} </el-descriptions-item>
                 <el-descriptions-item label="订单状态">{{ scope.row.status }} </el-descriptions-item>
@@ -121,6 +124,24 @@
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog title="套餐体检项目列表" v-model="data.formVisible1" width="70%" destroy-on-close>
+      <el-table tooltip-effect="dark myTooltip" border stripe :data="data.examinationList">
+        <el-table-column label="项目名称" prop="name"></el-table-column>
+        <el-table-column label="项目类型" prop="examinationTypeName"></el-table-column>
+        <el-table-column label="检测目的" prop="purpose" show-overflow-tooltip></el-table-column>
+        <el-table-column label="注意事项" prop="attention" show-overflow-tooltip></el-table-column>
+        <el-table-column label="适宜人群" prop="people" show-overflow-tooltip width="100"></el-table-column>
+        <el-table-column label="所属科室" prop="officeName"  width="100"></el-table-column>
+        <el-table-column label="项目价格" prop="money"  width="100"></el-table-column>
+      </el-table>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="data.formVisible1 = false">关 闭</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -143,10 +164,17 @@ const data = reactive({
   orderNo: null,
   orderType: null,
   status: null,
-  ids: []
+  ids: [],
+  examinationList: [],
+  formVisible1: false
 })
 
-const baseUrl = 'http://localhost:9090'
+const viewExaminationList = (examinationList) => {
+  data.examinationList = examinationList
+  data.formVisible1 = true
+}
+
+const baseUrl = import.meta.env.VITE_BASE_URL
 const handleFileUpload = (res) => {
   data.form.file = res.data
 }
@@ -182,7 +210,7 @@ const saveOrder = () => {
 const changeStatus = (row, status) => {
   data.form = JSON.parse(JSON.stringify(row))
   data.form.status = status
-  ElMessageBox.confirm('您确认操作吗？', '确认', { type: "warning" }).then(res => {
+  ElMessageBox.confirm('您确认操作吗？', '确认', {type: "warning"}).then(res => {
     request.put('/examinationOrder/update', data.form).then(res => {
       if (res.code === '200') {
         ElMessage.success('操作成功')
@@ -247,7 +275,7 @@ const save = () => {
 }
 
 const del = (id) => {
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', {type: 'warning'}).then(res => {
     request.delete('/examinationOrder/delete/' + id).then(res => {
       if (res.code === '200') {
         ElMessage.success("删除成功")
@@ -265,7 +293,7 @@ const delBatch = () => {
     ElMessage.warning("请选择数据")
     return
   }
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', {type: 'warning'}).then(res => {
     request.delete("/examinationOrder/delete/batch", {data: data.ids}).then(res => {
       if (res.code === '200') {
         ElMessage.success('操作成功')
@@ -291,3 +319,9 @@ const reset = () => {
 
 load()
 </script>
+
+<style>
+.myTooltip {
+  width: 500px;
+}
+</style>

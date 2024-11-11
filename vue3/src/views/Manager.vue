@@ -51,6 +51,10 @@
             <el-icon><Check /></el-icon>
             <span>预约普通体检预约</span>
           </el-menu-item>
+          <el-menu-item index="/manager/examinationOrder">
+            <el-icon><Document /></el-icon>
+            <span>体检订单</span>
+          </el-menu-item>
           <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu/></el-icon>

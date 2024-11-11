@@ -22,6 +22,7 @@ const router = createRouter({
         { path: 'informationDetail', meta: { name: '健康科普信息详情' }, component: () => import('@/views/manager/InformationDetail.vue')},
         { path: 'physicalExamination', meta: { name: '健康科普信息详情' }, component: () => import('@/views/manager/PhysicalExamination.vue')},
         { path: 'userPhysicalExamination', meta: { name: '用户预约普通体检' }, component: () => import('@/views/manager/UserPhysicalExamination.vue')},
+        { path: 'examinationOrder', meta: { name: '体检预约订单' }, component: () => import('@/views/manager/ExaminationOrder.vue')},
       ]
     },
     {

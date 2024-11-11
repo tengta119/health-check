@@ -40,7 +40,7 @@
             <div style="flex: 1">
               <span style="color: #666">检查价格：</span><span style="color: red; font-size: 20px">￥{{ item.money }}</span>
             </div>
-            <el-button type="primary" @click="handleReserve">立即预约</el-button>
+            <el-button type="primary" @click="handleReserve(item)">立即预约</el-button>
           </div>
         </div>
       </el-col>
@@ -51,15 +51,18 @@
     </div>
 
     <el-dialog title="预约体检" v-model="data.formVisible" width="40%" destroy-on-close>
-      <el-form ref="form" :model="data.form" label-width="90px" style="padding: 20px">
-        <el-form-item prop="date">
+      <el-form ref="formRef" :rules="data.rules" :model="data.form" label-width="100px" style="padding: 20px">
+        <el-form-item label="预约项目">
+          <div>{{ data.form.name }}</div>
+        </el-form-item>
+        <el-form-item prop="reserveDate">
           <template #label>
             <span>预约日期</span>
             <el-tooltip content="注意：必须在预约日期之前支付费用，否则会影响您的正常体检">
               <el-icon size="14" style="top: 8px; left: 2px"><QuestionFilled /></el-icon>
             </el-tooltip>
           </template>
-          <el-date-picker :disabled-date="disabledDate" style="width: 100%" v-model="data.form.date" type="date" placeholder="预约日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+          <el-date-picker :disabled-date="disabledDate" style="width: 100%" v-model="data.form.reserveDate" type="date" placeholder="预约日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         <el-form-item label="到达时间" prop="time">
           <div style="display: flex; align-items: center; grid-gap: 10px">
@@ -80,30 +83,63 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import request from "@/utils/request.js";
+import {ElMessage} from "element-plus";
+import {QuestionFilled} from "@element-plus/icons-vue";
 
+const timeValidator = (rule, value, callback) => {
+  if (!data.form.startTime) {
+    callback(new Error('请选择预约开始时间'))
+  } else if (!data.form.endTime) {
+    callback(new Error('请选择预约结束时间'))
+  } else {
+    callback()
+  }
+}
+
+const formRef = ref()
 const data = reactive({
+
   tableData: [],
   pageNum: 1,
   pageSize: 8,
   total: 0,
   name: null,
   formVisible: false,
-  form: {}
+  form: {},
+  rules: {
+    reserveDate: [
+      { required: true, message: '请选择预约日期', trigger: 'change' }
+    ],
+    time: [
+      { validator: timeValidator, trigger: 'change' }
+    ],
+  }
 })
 
 const disabledDate = (date) => {
   return date.getTime() < new Date().getTime()  // 在今天之前的日期无法预约
 }
 
-const handleReserve = () => {
-  data.form = {}
+const handleReserve = (examination) => {
+  data.form = { name: examination.name,  orderType: '普通体检', examinationId: examination.id }
   data.formVisible = true
 }
 
 const addReserve = () => {
-
+  formRef.value.validate((valid) => {
+    if (valid) {
+      request.post('/examinationOrder/add', data.form).then(res => {
+        if (res.code === '200') {
+          ElMessage.success('预约成功')
+          data.formVisible = false
+        } else {
+          ElMessage.error(res.message)
+        }
+      })
+    }
+  })
 }
 
 const load = () => {

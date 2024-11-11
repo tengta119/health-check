@@ -13,7 +13,7 @@ public interface PhysicalExaminationMapper {
 
     void deleteById(Integer id);
 
-    @Select("select * from `physical_examination` where id = #{id}")
+
     PhysicalExamination selectById(Integer id);
 
     List<PhysicalExamination> selectAll(PhysicalExamination physicalExamination);

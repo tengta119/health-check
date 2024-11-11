@@ -15,6 +15,15 @@
         order by physical_examination.id desc
     </select>
 
+    <select id="selectById" resultType="com.example.entity.PhysicalExamination">
+        select physical_examination.*, examination_type.name as examinationTypeName, office.name as officeName, doctor.name as doctorName
+        from `physical_examination`
+                 left join examination_type on physical_examination.examination_type_id = examination_type.id
+                 left join office on physical_examination.office_id = office.id
+                 left join doctor on physical_examination.doctor_id = doctor.id
+        where physical_examination.id = #{id}
+    </select>
+
     <delete id="deleteById">
         delete from `physical_examination`
         where id = #{id}

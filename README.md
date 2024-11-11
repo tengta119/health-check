@@ -1030,3 +1030,74 @@ load()
 
 
 
+
+
+## 11.套餐体检项目管理
+
+```sql
+CREATE TABLE `examination_package` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(255) DEFAULT NULL COMMENT '项目名称',
+  `descr` varchar(255) DEFAULT NULL COMMENT '套餐简介',
+  `cover` varchar(255) DEFAULT NULL COMMENT '项目封面',
+  `money` int(11) DEFAULT NULL COMMENT '费用',
+  `doctor_id` int(11) DEFAULT NULL COMMENT '负责医生',
+  `address` varchar(255) DEFAULT NULL COMMENT '地址',
+  `examinations` varchar(255) DEFAULT NULL COMMENT '体检项目列表',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='套餐体检项目信息';
+```
+
+其中**examinations**用字符串来模拟数字，在前端选择**体检项目**时，实际上选择的是体检项目的**id**,然后在后端的service层中根据**id**查询体检项目，并添加到**ExaminationPackage**中的**List\<PhysicalExamination\> examinationList**，然后再返回到前端
+
+**ExaminationPackageMapper.xml**
+
+```xml
+    <select id="selectAll" resultType="com.example.entity.ExaminationPackage">
+        select examination_package.*, doctor.name as doctorName from `examination_package`
+        left join doctor on examination_package.doctor_id = doctor.id
+        <where>
+            <if test="name != null"> and `examination_package`.name like concat('%', #{name}, '%')</if>
+        </where>
+        order by examination_package.id desc
+    </select>
+```
+
+
+
+**PhysicalExaminationMapper.xml**
+
+```xml
+    <select id="selectById" resultType="com.example.entity.PhysicalExamination">
+        select physical_examination.*, examination_type.name as examinationTypeName, office.name as officeName, doctor.name as doctorName
+        from `physical_examination`
+                 left join examination_type on physical_examination.examination_type_id = examination_type.id
+                 left join office on physical_examination.office_id = office.id
+                 left join doctor on physical_examination.doctor_id = doctor.id
+        where physical_examination.id = #{id}
+    </select>
+```
+
+
+
+**ExaminationPackageService**
+
+```java
+    public PageInfo<ExaminationPackage> selectPage(ExaminationPackage examinationPackage, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ExaminationPackage> list = examinationPackageMapper.selectAll(examinationPackage);
+        for (ExaminationPackage p : list) {
+            List<PhysicalExamination> examinationList = new ArrayList<>();
+            String examinations = p.getExaminations();
+            JSONArray examinationIds = JSONUtil.parseArray(examinations);
+            // 遍历体检项目id
+            for (Object examinationId : examinationIds) {
+                PhysicalExamination physicalExamination = physicalExaminationService.selectById((Integer) examinationId);// 查询普通体检的信息
+                examinationList.add(physicalExamination);
+            }
+            p.setExaminationList(examinationList);
+        }
+        return PageInfo.of(list);
+    }
+```
+

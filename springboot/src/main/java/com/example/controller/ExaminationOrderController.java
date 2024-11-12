@@ -81,4 +81,10 @@ public class ExaminationOrderController {
         return Result.success(pageInfo);
     }
 
+    @GetMapping("/schedule")
+    public Result selectSchedule() {
+        List<ExaminationOrder> examinationOrders = examinationOrderService.selectScheduleData();
+        return Result.success(examinationOrders);
+    }
+
 }

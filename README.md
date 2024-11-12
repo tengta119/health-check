@@ -1234,6 +1234,48 @@ CREATE TABLE `feedback` (
 
 
 
+## 14.医生日程安排
+
+```vue
+<template>
+  <div>
+    <el-calendar #date-cell="{ data }">
+      <div>
+        {{ data.day.split('-').slice(1).join('-') }}
+      </div>
+      <div @click="viewOrder(data.day)" style="color: #0066bc; padding: 10px 0" v-if="globalData.orderList?.filter(v => v.reserveDate === data.day).length > 0">
+        有<strong style="color: red">{{globalData.orderList.filter(v => v.reserveDate === data.day).length}}</strong>例待检查的患者
+      </div>
+    </el-calendar>
+  </div>
+</template>
+```
+
+主要在日历上显示有几例待检查的患者，点击对应的日期跳转到相应的页面
+
+```vue
+const viewOrder = (reserveDate) => {
+  router.push('/manager/examinationOrder?reserveDate=' + reserveDate + '&status=待检查')
+}
+```
+
+```vue
+status: router.currentRoute.value.query.status || data.status,
+reserveDate: router.currentRoute.value.query.reserveDate || null
+```
+
+在后端
+
+```java
+    public List<ExaminationOrder> selectScheduleData() {
+        Account currentUser = TokenUtils.getCurrentUser();
+        List<ExaminationOrder> examinationOrderList =  examinationOrderMapper.selectPrepareOrders(currentUser.getId());
+        return examinationOrderList;
+    }
+```
+
+
+
 
 
 

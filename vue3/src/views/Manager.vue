@@ -43,6 +43,10 @@
             <el-icon><home-filled/></el-icon>
             <span>系统首页</span>
           </el-menu-item>
+          <el-menu-item index="/manager/calendar" v-if="data.user.role === 'DOCTOR'">
+            <el-icon><Calendar /></el-icon>
+            <span>日程安排</span>
+          </el-menu-item>
           <el-menu-item index="/manager/userInformation">
             <el-icon><Document/></el-icon>
             <span>健康科普</span>
@@ -110,7 +114,17 @@ const updateUser = () => {
   data.user = JSON.parse(localStorage.getItem('xm-user') || '{}')
 }
 
-import {ChatDotRound, Check, CoffeeCup, Document, HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
+import {
+  Calendar,
+  ChatDotRound,
+  Check,
+  CoffeeCup,
+  Document,
+  HomeFilled,
+  Location,
+  Menu,
+  Setting
+} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
 import { reactive } from "vue";
 import {ElMessage} from "element-plus";

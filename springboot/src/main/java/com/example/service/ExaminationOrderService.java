@@ -133,4 +133,9 @@ public class ExaminationOrderService {
         return PageInfo.of(list);
     }
 
+    public List<ExaminationOrder> selectScheduleData() {
+        Account currentUser = TokenUtils.getCurrentUser();
+        List<ExaminationOrder> examinationOrderList =  examinationOrderMapper.selectPrepareOrders(currentUser.getId());
+        return examinationOrderList;
+    }
 }

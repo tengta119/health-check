@@ -28,4 +28,7 @@ public interface ExaminationOrderMapper {
                                                        @Param("examinationId") Integer examinationId,
                                                        @Param("orderType") String orderType,
                                                        @Param("userId") Integer userId);
+
+    @Select("select * from `examination_order` where doctor_id = #{doctorId} and status = '待检查'")
+    List<ExaminationOrder> selectPrepareOrders(Integer id);
 }

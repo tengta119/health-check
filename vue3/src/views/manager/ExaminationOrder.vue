@@ -151,6 +151,7 @@ import {reactive} from "vue";
 import request from "@/utils/request.js";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {Delete, Edit} from "@element-plus/icons-vue";
+import router from "@/router/index.js";
 
 
 const data = reactive({
@@ -229,7 +230,8 @@ const load = () => {
       pageSize: data.pageSize,
       orderNo: data.orderNo,
       orderType: data.orderType,
-      status: data.status,
+      status: router.currentRoute.value.query.status || data.status,
+      reserveDate: router.currentRoute.value.query.reserveDate || null
     }
   }).then(res => {
     if (res.code === '200') {
@@ -314,6 +316,7 @@ const reset = () => {
   data.orderNo = null
   data.orderType = null
   data.status = null
+  location.href = '/manager/examinationOrder'
   load()
 }
 

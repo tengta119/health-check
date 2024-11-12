@@ -15,6 +15,7 @@
             <if test="status != null"> and examination_order.status = #{status}</if>
             <if test="userId != null"> and examination_order.user_id = #{userId}</if>
             <if test="doctorId != null"> and examination_order.doctor_id = #{doctorId}</if>
+            <if test="reserveDate != null"> and examination_order.reserve_date = #{reserveDate}</if>
         </where>
         order by examination_order.id desc
     </select>

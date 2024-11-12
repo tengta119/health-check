@@ -1171,3 +1171,72 @@ private List<PhysicalExamination> examinationList;
         }
 ```
 
+
+
+## 13.反馈管理功能
+
+
+
+**数据库表 feedback**
+
+```sql
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int(11) DEFAULT NULL COMMENT '用户id',
+  `content` varchar(255) DEFAULT NULL COMMENT '反馈内容',
+  `time` varchar(255) DEFAULT NULL COMMENT '反馈时间',
+  `reply_content` varchar(255) DEFAULT NULL COMMENT '回复内容',
+  `reply_time` varchar(255) DEFAULT NULL COMMENT '回复时间',
+  `status` varchar(255) DEFAULT NULL COMMENT '回复状态',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='反馈信息表';
+```
+
+
+
+主要逻辑是当用户在**UserFeedback.vue**输入反馈时，创建feedback对象，传入数据库。医生在**Feedback.vue**输入回复内容，
+
+```java
+    public void add(Feedback feedback) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        feedback.setUserId(currentUser.getId());
+        feedback.setTime(DateUtil.now());
+        feedback.setStatus("未回复");
+        feedbackMapper.insert(feedback);
+    }
+
+    public void updateById(Feedback feedback) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (currentUser != null && RoleEnum.ADMIN.name().equals(currentUser.getRole())) {
+            feedback.setReplyTime(DateUtil.now());
+            feedback.setStatus("已回复");
+        }
+        feedbackMapper.updateById(feedback);
+    }
+```
+
+
+
+**FeedbackMapper.xml**
+
+关联查询
+
+```xml
+    <select id="selectAll" resultType="com.example.entity.Feedback">
+        select feedback.*, user.name as userName, user.avatar as userAvatar from `feedback`
+        left join user on feedback.user_id = user.id
+        <where>
+            <if test="content != null"> and feedback.content like concat('%', #{content}, '%')</if>
+        </where>
+        order by feedback.id desc
+    </select>
+```
+
+
+
+
+
+
+
+
+

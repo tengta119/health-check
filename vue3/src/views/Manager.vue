@@ -59,6 +59,10 @@
             <el-icon><Document /></el-icon>
             <span>体检订单</span>
           </el-menu-item>
+          <el-menu-item index="/manager/userFeedback">
+            <el-icon><ChatDotRound /></el-icon>
+            <span>反馈与建议</span>
+          </el-menu-item>
           <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu/></el-icon>
@@ -77,6 +81,7 @@
             <el-menu-item index="/manager/notice">系统公告</el-menu-item>
             <el-menu-item index="/manager/office">科室信息</el-menu-item>
             <el-menu-item index="/manager/title">职称信息</el-menu-item>
+            <el-menu-item index="/manager/feedback" v-if="data.user.role === 'ADMIN'">用户反馈</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="3" v-if="data.user.role === 'ADMIN'">
             <template #title>
@@ -105,7 +110,7 @@ const updateUser = () => {
   data.user = JSON.parse(localStorage.getItem('xm-user') || '{}')
 }
 
-import {Check, CoffeeCup, Document, HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
+import {ChatDotRound, Check, CoffeeCup, Document, HomeFilled, Location, Menu, Setting} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
 import { reactive } from "vue";
 import {ElMessage} from "element-plus";

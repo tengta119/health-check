@@ -65,8 +65,16 @@ const login = () => {
     if (valid) { //表示表单校验通过
       request.post('/login', data.form).then(res => {
         if (res.code === '200') {
+          ElMessage.success('登录成功')
           //存储用户信息到浏览器缓存
           localStorage.setItem('xm-user', JSON.stringify(res.data))
+          setTimeout(() =>{
+            if (res.data.role === 'ADMIN') {
+              location.href = '/manager/dataAnalysis'
+            } else {
+              location.href = '/manager/home'
+            }
+          }, 500)
           router.push('/manager/home')
         } else {
           ElMessage.error(res.message)

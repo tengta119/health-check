@@ -28,6 +28,7 @@ const router = createRouter({
         { path: 'feedback', meta: { name: '用户反馈' }, component: () => import('@/views/manager/Feedback.vue')},
         { path: 'userFeedback', meta: { name: '用户反馈' }, component: () => import('@/views/manager/UserFeedback.vue')},
         { path: 'calendar', meta: { name: '日程安排' }, component: () => import('@/views/manager/Calendar.vue')},
+        { path: 'dataAnalysis', meta: { name: '数据统计' }, component: () => import('@/views/manager/DataAnalysis.vue')},
       ]
     },
     {

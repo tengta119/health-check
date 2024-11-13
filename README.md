@@ -1276,7 +1276,55 @@ reserveDate: router.currentRoute.value.query.reserveDate || null
 
 
 
+## 15.数据统计
 
+安装Ecahrts
+
+```vue
+npm i echarts -S
+```
+
+
+
+实现**折线图**、**饼状图**、**柱形图**
+
+![005](images/005.png)
+
+
+
+前端套模板就可以了，但是注意**请求数据时对应的名称要写对**
+
+![006](images/006.png)
+
+
+
+后端在返回数据时用HashMap的形式
+
+**折线图**
+
+```java
+    @GetMapping("/lineData")
+    public Result getLineData() {
+        List<ExaminationOrder> examinationOrders = examinationOrderMapper.selectAll(null);
+        //获取一个月的日期
+        Date date = new Date();
+        DateTime start = DateUtil.offsetDay(date, -30); //30天之前的日期、
+        List<DateTime> dateTimes = DateUtil.rangeToList(start, date, DateField.DAY_OF_YEAR);
+        List<String> dateStrList = dateTimes.stream().map(DateUtil::formatDate).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
+        ArrayList<Integer> moneyList = new ArrayList<>();
+        for (String day : dateStrList) {
+            // 统计当天的销售额
+            Integer money = examinationOrders.stream().filter(o -> o.getCreateTime().contains(day))
+                    .filter(o -> o.getStatus().equals("待检查") || o.getStatus().equals("待上传报告") || o.getStatus().equals("已完成"))
+                    .map(ExaminationOrder::getMoney).reduce(Integer::sum).orElse(0);
+            moneyList.add(money);
+        }
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("dateStrList", dateStrList);
+        map.put("moneyList", moneyList);
+        return Result.success(map);
+    }
+```
 
 
 

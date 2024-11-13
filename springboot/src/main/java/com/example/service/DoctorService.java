@@ -92,4 +92,12 @@ public class DoctorService {
         dbDoctor.setPassword(account.getNewPassword());
         doctorMapper.updateById(dbDoctor);
     }
+
+    public Integer selectByTitleId(Integer titleId) {
+        return doctorMapper.selectByTitleId(titleId);
+    }
+
+    public Integer selectByOfficeId(Integer officeId) {
+        return doctorMapper.selectByOfficeId(officeId);
+    }
 }

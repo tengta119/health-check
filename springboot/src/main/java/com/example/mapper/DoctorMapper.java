@@ -21,4 +21,10 @@ public interface DoctorMapper {
 
     @Select("select * from `doctor` where id = #{id}")
     Doctor selectById(Integer id);
+
+    @Select("select count(*) from `doctor` where title_id = #{titleId}")
+    Integer selectByTitleId(Integer titleId);
+
+    @Select("select count(*) from `doctor` where office_id = #{officeId}")
+    Integer selectByOfficeId(Integer officeId);
 }

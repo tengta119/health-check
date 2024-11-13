@@ -43,6 +43,10 @@
             <el-icon><home-filled/></el-icon>
             <span>系统首页</span>
           </el-menu-item>
+          <el-menu-item index="/manager/dataAnalysis" v-if="data.user.role === 'ADMIN'">
+            <el-icon><DataLine/></el-icon>
+            <span>数据统计</span>
+          </el-menu-item>
           <el-menu-item index="/manager/calendar" v-if="data.user.role === 'DOCTOR'">
             <el-icon><Calendar /></el-icon>
             <span>日程安排</span>
@@ -118,7 +122,7 @@ import {
   Calendar,
   ChatDotRound,
   Check,
-  CoffeeCup,
+  CoffeeCup, DataLine,
   Document,
   HomeFilled,
   Location,
